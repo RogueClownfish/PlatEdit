@@ -8,7 +8,7 @@ boolean up, down, left, right, shift;
 byte selection = 2;
 int brushRadius = 0;
 void setup() {
-  size(1200, 800);
+  size(1300, 740);
   loadImages();
   offsetX = 0;
   offsetY = 0;
