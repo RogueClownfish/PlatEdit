@@ -4,15 +4,17 @@ class Level {
   Level() {
     //dont forget to load the level!
     tiles = new Tile[1][1][2];
-   /*levelWidth = 200;
-     levelHeight = 80;
-     tiles = new Tile[levelWidth][levelHeight][2];
-     for (int i = 0; i < levelWidth; i++) {
-     for (int j = 0; j < levelHeight; j++) {
-     tiles[i][j][0] = new Tile(i, j, 0, byte(0));
-     tiles[i][j][1] = new Tile(i, j, 0, byte(0));
-     }
-     }*/
+    /*
+    levelWidth = 200;
+    levelHeight = 40;
+    tiles = new Tile[levelWidth][levelHeight][2];
+    for (int i = 0; i < levelWidth; i++) {
+      for (int j = 0; j < levelHeight; j++) {
+        tiles[i][j][0] = new Tile(i, j, 0, byte(0));
+        tiles[i][j][1] = new Tile(i, j, 0, byte(0));
+      }
+    }
+    */
   }
 
   void levelRender() {

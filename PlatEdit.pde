@@ -4,8 +4,9 @@ PImage[] tileSprites;
 PImage[][] joinedSprites;
 PImage bg;
 byte c = 0; //change this to input a different file
-boolean up, down, left, right;
+boolean up, down, left, right, shift;
 byte selection = 2;
+int brushRadius = 0;
 void setup() {
   size(1200, 800);
   loadImages();
@@ -31,15 +32,27 @@ void draw() {
   }
   if (up) {
     offsetY-=10;
+    if (shift) {
+      offsetY-=15;
+    }
   }
   if (down) {
     offsetY+=10;
+    if (shift) {
+      offsetY+=15;
+    }
   }
   if (left) {
     offsetX-=10;
+    if (shift) {
+      offsetX-=15;
+    }
   }
   if (right) {
     offsetX+=10;
+    if (shift) {
+      offsetX+=15;
+    }
   }
   if (mouseX > 0 && mouseY > 0 && mouseX < width && mouseY < height) {
     int sx, sy;
@@ -51,7 +64,7 @@ void draw() {
       } else if (selection == 0) {
         fill(200, 0, 0, 100);
       }
-      rect(sx*40-offsetX-2, sy*40-offsetY-2, 44, 44);
+      rect((sx-brushRadius)*40-offsetX-2, (sy-brushRadius)*40-offsetY-2, 44+(80*brushRadius), 44+(80*brushRadius));
       if (selection >= 1  && selection <= tileSprites.length) {
         tint(255, 200);
         image(tileSprites[selection-1], sx*40-offsetX, sy*40-offsetY, 40, 40);
@@ -64,54 +77,74 @@ void draw() {
         } else {
           l = 0;
         }
-        eLevel.tiles[sx][sy][l] = new Tile(sx, sy, l, selection);
-        if (inBounds(sx+1, sy, eLevel.levelWidth, eLevel.levelHeight)) {
-          eLevel.tiles[sx+1][sy][l].getDisplayFlags(eLevel.levelWidth, eLevel.levelHeight);
+        for (int i = sx-brushRadius; i < sx + brushRadius+1; i++) {
+          for (int j = sy-brushRadius; j < sy + brushRadius+1; j++) {
+            if (inBounds(i, j, eLevel.levelWidth, eLevel.levelHeight)) {
+              eLevel.tiles[i][j][l] = new Tile(i, j, l, selection);
+              eLevel.tiles[i][j][l].getDisplayFlags(eLevel.levelWidth, eLevel.levelHeight);
+            }
+            if (inBounds(i+1, j, eLevel.levelWidth, eLevel.levelHeight)) {
+              eLevel.tiles[i+1][j][l].getDisplayFlags(eLevel.levelWidth, eLevel.levelHeight);
+            }
+            if (inBounds(i, j+1, eLevel.levelWidth, eLevel.levelHeight)) {
+              eLevel.tiles[i][j+1][l].getDisplayFlags(eLevel.levelWidth, eLevel.levelHeight);
+            }
+            if (inBounds(i-1, j, eLevel.levelWidth, eLevel.levelHeight)) {
+              eLevel.tiles[i-1][j][l].getDisplayFlags(eLevel.levelWidth, eLevel.levelHeight);
+            }
+            if (inBounds(i, j-1, eLevel.levelWidth, eLevel.levelHeight)) {
+              eLevel.tiles[i][j-1][l].getDisplayFlags(eLevel.levelWidth, eLevel.levelHeight);
+            }
+          }
         }
-        if (inBounds(sx, sy+1, eLevel.levelWidth, eLevel.levelHeight)) {
-          eLevel.tiles[sx][sy+1][l].getDisplayFlags(eLevel.levelWidth, eLevel.levelHeight);
-        }
-        if (inBounds(sx-1, sy, eLevel.levelWidth, eLevel.levelHeight)) {
-          eLevel.tiles[sx-1][sy][l].getDisplayFlags(eLevel.levelWidth, eLevel.levelHeight);
-        }
-        if (inBounds(sx, sy-1, eLevel.levelWidth, eLevel.levelHeight)) {
-          eLevel.tiles[sx][sy-1][l].getDisplayFlags(eLevel.levelWidth, eLevel.levelHeight);
-        }
-        eLevel.tiles[sx][sy][l].getDisplayFlags(eLevel.levelWidth, eLevel.levelHeight);
       }
     }
   }
 }
 
 void keyPressed() {
-  //if (key = CODED) {
-  if (keyCode == UP) {
+  if (key == CODED) {
+    if (keyCode == SHIFT) {
+      shift = true;
+    }
+  }
+  if (key == 'w' || key == 'W') {
     up = true;
   }
-  if (keyCode == DOWN) {
+  if (key == 's' || key == 'S') {
     down = true;
   }
-  if (keyCode == LEFT) {
+  if (key == 'a' || key == 'A') {
     left = true;
   }
-  if (keyCode == RIGHT) {
+  if (key == 'd' || key == 'D') {
     right = true;
   }
-  //}
 }
 
 void keyReleased() {
-  if (keyCode == UP) {
+  if (key == CODED) {
+    if (keyCode == SHIFT) {
+      shift = false;
+    }
+  }
+  if (key == 'w' || key == 'W') {
     up = false;
   }
-  if (keyCode == DOWN) {
+  if (key == 's' || key == 'S') {
     down = false;
   }
-  if (keyCode == LEFT) {
+  if (key == 'a' || key == 'A') {
     left = false;
   }
-  if (keyCode == RIGHT) {
+  if (key == 'd' || key == 'D') {
     right = false;
+  }
+  if (key == ',' && brushRadius > 0) {
+    brushRadius--;
+  }
+  if (key == '.') {
+    brushRadius++;
   }
 }
 
